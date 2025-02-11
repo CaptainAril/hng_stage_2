@@ -19,7 +19,7 @@ db.books = {
     2: Book(
         id=2,
         title="The Lord of the Rings",
-        author="J.R.R. Tolkien",
+        author="J.R. Tolkien",
         publication_year=1954,
         genre=Genre.FANTASY,
     ),
@@ -46,6 +46,20 @@ async def create_book(book: Book):
 )
 async def get_books() -> OrderedDict[int, Book]:
     return db.get_books()
+
+
+@router.get("/{book_id}", response_model=Book, status_code=status.HTTP_200_OK)
+async def get_book(book_id: int) -> Book:
+        book = db.get_book(book_id)
+        if book:
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content=db.get_book(book_id).model_dump()
+            )
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"detail": "Book not found"},
+        )
 
 
 @router.get("/{book_id}", response_model=Book, status_code=status.HTTP_200_OK)
