@@ -21,9 +21,15 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
+            echo "Navigating to project directory"
             cd /home/ubuntu/hng_server
+            echo "Pulling latest changes from Git"
             git pull origin main
+            echo "Activating virtual environment"
             source /home/ubuntu/hng_server/venv/bin/activate
+            echo "Installing dependencies"
             pip install -r requirements.txt
+            echo "Restarting gunicorn service"
             sudo systemctl restart gunicorn.service
+            echo "Restarting nginx"
             sudo systemctl restart nginx
